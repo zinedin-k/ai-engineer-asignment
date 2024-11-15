@@ -87,3 +87,50 @@ In this step, _three_ ensemble models are developed and they are based on the mo
 The standard voting method was not used because of the nature of the problem. Each submodel is specialized for classifing only one class with solid accuracy, so the standard voting method would result with 1 good submodel's prediction versus 9 other submodel's predictions, where other 9 submodels are not properly trained for that class, which would most likely result in bad final prediction.
 
 ### 7. Measure the total learning time for each of three models (training of 10 sub-models), and calculate the total number of iterations per three models (sum of iterations of sub-models) 
+
+For this step, the stored data from _Task 4_ was used to calculate the total training time for each of three models. In the following table, row _group_ containts three groups: group a, group b and group c. Group a is a group of sub-models where each sub-model is trained on augmented sub-dataset with additional 5% rows randomly selected from other 9 classes. Group B and C are groups trained on augmented sub-datasets with additional 10% and 15% rows, respectively.
+```
+         total_training_time  total_iterations
+group                                         
+group_a           112.467002           18418.0
+group_b           119.373199           20035.0
+group_c           119.006512           19181.0
+```
+From the table, it can be observed that it took more time and iterations to traing group b of submodels than to traing group a submodels. But it can also be observed that the training time and iterations for training group c submodels was less than the training time and iterations of group b submodels. Which is interesting, this could happen due to various factors. It could mean that the subdatasets used for group c submodel training was better and more _diverse_ and it provided better ground for faster convergence and that this diversity helped the models generalize better. Also, because it was trained locally and because the training time and number of iterations were fairly similar, it could simply mean that the hardware(GPU) was not utilisied as efficiently as in the group of submodels trained on a smaller dataset.
+
+### 8. Test three ensemble models with test data. 
+```
+Max vote variant
+Ensemble accuracy for Group A models: 91.92%
+Ensemble accuracy for Group B models: 93.67%
+Ensemble accuracy for Group C models: 93.87%
+
+Averaging confidences variant
+Ensemble accuracy (averaging) for Group A models: 89.37%
+Ensemble accuracy (averaging) for Group B models: 91.64%
+Ensemble accuracy (averaging) for Group C models: 92.02%
+
+Weighted confidences variant
+Ensemble accuracy for Group A models: 91.93%
+Ensemble accuracy for Group B models: 93.59%
+Ensemble accuracy for Group C models: 94.02%
+```
+The results demonstrate how the ensemble accuracy varies across the three models (Groups A, B, and C) and across three ensemble methods (Max Vote, Averaging Confidences, and Weighted Confidences):
+- Max Vote Variant:
+    * Accuracy increases from Group A (91.92%) to Group C (93.87%), with Group B performing slightly below Group C.
+    * The increasing trend indicates that higher augmentation percentages (Group C with 15%) provide better generalization, as the ensemble can better predict test data by leveraging more diverse individual sub-models.
+
+- Averaging Confidences Variant:
+    * Accuracy follows a similar upward trend but is consistently lower compared to the Max Vote method for all groups.
+    * This suggests that averaging model confidences may dilute the effectiveness of strong predictions, especially when sub-models are highly confident in correct classes.
+
+- Weighted Confidences Variant:
+    * This method achieves the highest accuracy overall, with Group C (94.02%) performing the best.
+    * The performance increase highlights that assigning weights to confidences helps emphasize the contribution of better-performing sub-models, leading to improved predictions.
+ 
+Group C consistently outperforms Groups A and B across all ensemble methods, showcasing that augmenting with 15% additional rows provides the most robust sub-models.
+Group B slightly outperforms Group A in all methods, confirming that a higher augmentation percentage (10% vs. 5%) positively impacts ensemble performance.
+- Overall Trends:
+    * Weighted Confidences > Max Vote > Averaging Confidences in terms of accuracy.
+    * As the augmentation percentage increases, ensemble accuracy improves, with Group C achieving the best results in all cases.
+### 9. Plot the dependence of accuracy (x-axis) and training time (y-axis) on one scatter plot, and dependence of accuracy (x-axis) and number of iterations (y-axis) on second scatter plot. 
